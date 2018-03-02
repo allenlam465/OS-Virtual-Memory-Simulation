@@ -21,7 +21,7 @@ public class VPT {
 	}
 
 	public boolean inPT(String vAddr) {
-		if(pgTable[Integer.parseInt(vAddr)] != null ) {
+		if(pgTable[Integer.parseInt(vAddr,16)] != null ) {
 			return true;
 		}
 		
