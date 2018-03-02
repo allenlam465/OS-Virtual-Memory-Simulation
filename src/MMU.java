@@ -3,7 +3,7 @@ public class MMU {
 	private String[] processes; //aka virtual addresses
 	private VPT pageTable = new VPT();
 	protected TLBCache tlb = new TLBCache();
-	
+
 
 	public String rw, pgNum, offset;
 
@@ -22,14 +22,17 @@ public class MMU {
 
 			pgNum = getPgNum(processes[i]);
 			offset = getOffset(processes[i]);
-			
+
 			System.out.println(pgNum + " " + offset);
 
-			if(inTLB(pgNum)){
+			if(tlb.inTLB(pgNum)){
 				//Output info to csv
 			}
+			else if(pageTable.inPT(pgNum)){
+
+			}
 			else{
-				System.out.println("Read.");
+				System.out.println("Hard Miss Read.");
 				System.out.println("Not in page table. Obtaining page from disk.");
 
 				PageTableEntry pgEntry = new PageTableEntry("1", "1", "0");
@@ -43,49 +46,58 @@ public class MMU {
 			}
 		}
 		else if(rw.equals("1")) {
-			System.out.println("Write.");
-			System.out.println("Not in page table. Obtaining page from disk.");
-			
-			i++;
 
-			pgNum = getPgNum(processes[i]);
-			offset = getOffset(processes[i]);
+			if(tlb.inTLB(pgNum)){
+				//Output info to csv
+			}
+			else if(pageTable.inPT(pgNum)){
 
-			i++;
+			}
+			else{
+				System.out.println("Hard Miss Write.");
+				System.out.println("Not in page table. Obtaining page from disk.");
 
-			offset += ("." + processes[i]);
+				i++;
 
-			PageTableEntry pgEntry = new PageTableEntry("1", "1", "1");
-			pageTable.addEntry(pgEntry, Integer.parseInt(pgNum,16));
+				pgNum = getPgNum(processes[i]);
+				offset = getOffset(processes[i]);
 
-			TLBEntry entry = new TLBEntry(pgNum, "1", "1", "1");
-			entry.setpageFrameNum(pgNum);
-			tlb.addEntry(entry);
+				i++;
+
+				offset += ("." + processes[i]);
+
+				PageTableEntry pgEntry = new PageTableEntry("1", "1", "1");
+				pageTable.addEntry(pgEntry, Integer.parseInt(pgNum,16));
+
+				TLBEntry entry = new TLBEntry(pgNum, "1", "1", "1");
+				entry.setpageFrameNum(pgNum);
+				tlb.addEntry(entry);
+			}
 
 		}
-		
+
 		pageTable.printTable();
 		tlb.printTable();
 
 		return i;
 	}
-	
+
 	public boolean checkpgTable(String vAddr) {
 		return pageTable.inPT(vAddr);
 	}
-	
+
 	public boolean checkTLB(String vAddr) {
 		return tlb.inTLB(vAddr);
 	}
-	
+
 	public VPT getVPT(){
 		return pageTable;
 	}
-	
+
 	public TLBCache getTLB(){
 		return tlb;
 	}
-	
+
 	public String getRW(){
 		return rw;
 	}
@@ -93,7 +105,7 @@ public class MMU {
 	public String getPgNum(String vAddr){
 		return vAddr.substring(0,2);
 	}
-	
+
 	public String getPgNum(){
 		return pgNum;
 	}
@@ -101,7 +113,7 @@ public class MMU {
 	public String getOffset(String vAddr){
 		return vAddr.substring(2,4);
 	}
-	
+
 	public String getOffset(){
 		return offset;
 	}

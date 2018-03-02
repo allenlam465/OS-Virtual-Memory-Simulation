@@ -1,6 +1,6 @@
 public class VPT {
 
-	protected PageTableEntry[] pgTable = new PageTableEntry[16];
+	protected PageTableEntry[] pgTable = new PageTableEntry[256];
 
 	public VPT() {
 
@@ -21,7 +21,7 @@ public class VPT {
 	}
 
 	public boolean inPT(String vAddr) {
-		if(pgTable[Integer.parseInt(vAddr)] != null ) {
+		if(pgTable[Integer.parseInt(vAddr,16)] != null ) {
 			return true;
 		}
 		
