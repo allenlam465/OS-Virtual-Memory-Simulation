@@ -23,13 +23,12 @@ public class MMU {
 			pgNum = getPgNum(processes[i]);
 			offset = getOffset(processes[i]);
 
-			System.out.println(pgNum + " " + offset);
-
 			if(tlb.inTLB(pgNum)){
 				//Output info to csv
+				System.out.println("Found in tlb a hit.");
 			}
 			else if(pageTable.inPT(pgNum)){
-
+				System.out.println("Found in pageTable a soft miss.");
 			}
 			else{
 				System.out.println("Hard Miss Read.");
@@ -39,7 +38,7 @@ public class MMU {
 				pageTable.addEntry(pgEntry, Integer.parseInt(pgNum,16));
 
 				TLBEntry entry = new TLBEntry(pgNum, "1", "1", "0");
-				entry.setpageFrameNum(pgNum);
+				entry.setpageFrameNum(pgEntry.getPageFrameNum());
 				tlb.addEntry(entry);
 
 				//Output info to csv
@@ -49,9 +48,14 @@ public class MMU {
 
 			if(tlb.inTLB(pgNum)){
 				//Output info to csv
+				System.out.println("Found in tlb a hit.");
+				i++;
+				i++;
 			}
 			else if(pageTable.inPT(pgNum)){
-
+				System.out.println("Found in pageTable a soft miss.");
+				i++;
+				i++;
 			}
 			else{
 				System.out.println("Hard Miss Write.");
