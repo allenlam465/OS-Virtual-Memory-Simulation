@@ -25,7 +25,7 @@ public class MMU {
 			
 			System.out.println(pgNum + " " + offset);
 
-			if(inTLB(pgNum)){
+			if(tlb.inTLB(pgNum)){
 				//Output info to csv
 			}
 			else{

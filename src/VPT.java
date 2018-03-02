@@ -1,6 +1,6 @@
 public class VPT {
 
-	protected PageTableEntry[] pgTable = new PageTableEntry[16];
+	protected PageTableEntry[] pgTable = new PageTableEntry[256];
 
 	public VPT() {
 
