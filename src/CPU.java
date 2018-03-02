@@ -8,9 +8,7 @@ public class CPU {
 
 	protected String[] processes;
 	protected MMU mmu;
-	protected PhyMem ram;
-	protected TLBCache tlb;
-	
+	public CSV csv;
 
 	public static void main(String[] arg) throws IOException {
 		Scanner s = new Scanner(System.in);
@@ -18,7 +16,8 @@ public class CPU {
 		String input;
 
 		System.out.println("File Name: ");
-		input = s.nextLine();
+		//input = s.nextLine();
+		input = "test_files/test_1.txt";
 
 		String[] processes = getFileContent(input).split("\\s+");
 
@@ -28,7 +27,7 @@ public class CPU {
 		for(int i = 0; i < processes.length; i++){
 			i = mmu.handle(i);
 			
-			write = Integer.getInteger(mmu.getRW());
+			write = Integer.parseInt(mmu.getRW());
 			
 			if(write == 1){
 				
@@ -40,10 +39,6 @@ public class CPU {
 		}
 
 		s.close();
-	}
-
-	private void sendMMU(String[] process){
-		mmu = new MMU(process);
 	}
 
 	//Obtain values in the test files (The virtual memory address)

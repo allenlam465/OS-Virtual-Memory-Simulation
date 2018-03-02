@@ -13,6 +13,10 @@ public class TLBEntry {
 		entry[2] = reference;
 		entry[3] = dirty;
 	}
+	
+	public void print(){
+		System.out.println("V Address: " + entry[0] + " Valid: " + entry[1] + " Reference: " + entry[2] + " Dirty: " + entry[3] + " Frame#: " + entry[4]);
+	}
 
 	public String getVPage() {
 		return entry[0];

@@ -14,7 +14,7 @@ public class PageTableEntry {
 	}
 	
 	public void print(){
-		System.out.println("Valid: " + entry[0] + "Reference: " + entry[1] + "Dirty: " + entry[2] + "Frame#: " + entry[3]);
+		System.out.println("Valid: " + entry[0] + " Reference: " + entry[1] + " Dirty: " + entry[2] + " Frame#: " + entry[3]);
 	}
 
 	public String getValid() {

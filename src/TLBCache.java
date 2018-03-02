@@ -15,12 +15,22 @@ public class TLBCache {
 				tlbTable[i] = entry;
 				break;
 			}
-			else{
+			else if(i == 7){
 				tlbTable[first] = entry;
 				first++;
 				resetFirst();
 			}
 		}
+	}
+	
+	public boolean inTLB(String vAddr) {
+		for(int i = 0; i < tlbTable.length; i++) {
+			if(vAddr.equals(tlbTable[i].getVPage())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public void resetFirst(){
@@ -31,6 +41,15 @@ public class TLBCache {
 
 	public TLBEntry getEntry(int i) {
 		return tlbTable[i];
+	}
+	
+	public void printTable() {
+		for (int i = 0; i < tlbTable.length; i++) {
+			if(tlbTable[i] != null){
+				System.out.print(i + " ");
+				tlbTable[i].print();
+			}
+		}
 	}
 
 }

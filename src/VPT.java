@@ -1,6 +1,6 @@
 public class VPT {
 
-	protected PageTableEntry[] pgTable = new PageTableEntry[256];
+	protected PageTableEntry[] pgTable = new PageTableEntry[16];
 
 	public VPT() {
 
@@ -9,14 +9,32 @@ public class VPT {
 	//Use the virtual page number to index the entry
 	protected void addEntry(PageTableEntry entry,int vPage){
 		pgTable[vPage] = entry;
+		pgTable[vPage].setpageFrameNum(vPage);
 	}
-	
+
 	protected boolean isEntry(int index){
 		if(pgTable[index] == null){
 			return false;
 		}
-		
+
 		return true;
+	}
+
+	public boolean inPT(String vAddr) {
+		if(pgTable[Integer.parseInt(vAddr)] != null ) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	public void printTable() {
+		for (int i = 0; i < pgTable.length; i++) {
+			if(pgTable[i] != null){
+				System.out.print(i + " ");
+				pgTable[i].print();
+			}
+		}
 	}
 
 }
