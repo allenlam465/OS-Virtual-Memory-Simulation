@@ -7,11 +7,7 @@ public class PhyMem {
 
 	}
 	
-	public void addEntry(){
+	public void loadPage(String pgNum){
 		
 	}
-
-	
-
-
 }
