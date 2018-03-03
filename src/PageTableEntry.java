@@ -21,7 +21,7 @@ public class PageTableEntry {
 		return entry[0];
 	}
 
-	private void setValid(String valid) {
+	protected void setValid(String valid) {
 		entry[0] = valid;
 	}
 
@@ -29,7 +29,7 @@ public class PageTableEntry {
 		return entry[1];
 	}
 
-	private void setReference(String reference) {
+	protected void setReference(String reference) {
 		entry[1] = reference;
 	}
 
@@ -37,7 +37,7 @@ public class PageTableEntry {
 		return entry[2];
 	}
 
-	private void setDirty(String dirty) {
+	protected void setDirty(String dirty) {
 		entry[2] = dirty;
 	}
 

@@ -51,5 +51,15 @@ public class TLBCache {
 			}
 		}
 	}
+	
+	public boolean isFull(){
+		for(int i = 0; i < tlbTable.length; i++){
+			if(tlbTable[i] == null){
+				return false;
+			}
+		}
+		
+		return true;
+	}
 
 }

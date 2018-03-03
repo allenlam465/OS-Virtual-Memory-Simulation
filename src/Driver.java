@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class Driver {
 	
+	public CSV csv;
+	
 	public static void main (String args[]) throws IOException{
 		
 		OS os = new OS();
@@ -28,9 +30,8 @@ public class Driver {
 		for(int i = 0; i < processes.length; i++){
 			i = os.mmu.handle(i);
 			
-			System.out.println(i);
+			System.out.println("I: " + i);
 			
-			i++;
 			
 			if(os.mmu.checkTLB()){
 				System.out.println("Hit found in tlb.");
@@ -42,6 +43,10 @@ public class Driver {
 			}
 			else{
 				System.out.println("Hard miss not in TLB or pgTable.");
+				System.out.println("Writing to physical memory.");
+				
+				
+				
 				PageTableEntry pgEntry = new PageTableEntry("1", "1", "0");
 				os.mmu.getVPT().addEntry(pgEntry, Integer.parseInt(os.mmu.pgNum,16));
 
@@ -52,16 +57,26 @@ public class Driver {
 			
 			rw = Integer.parseInt(os.mmu.getRW());
 			
+			System.out.println("RW: " + os.mmu.getRW());
+			
 			if(rw == 1){
 				i++;
 			}
 			else{
+			
 			}
+			
+			os.instructionNum += 1;
 			
 			System.out.println(processes[i]);
 		}
 		
 		s.close();
+		
+	}
+	
+	private static void write(String pgNum, OS os, int index) throws IOException{
+
 		
 	}
 	
