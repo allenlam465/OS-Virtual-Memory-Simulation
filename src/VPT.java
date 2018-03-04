@@ -18,6 +18,10 @@ public class VPT {
 
 		return true;
 	}
+	
+	public PageTableEntry getEntry(String vAddr){
+		return pgTable[Integer.parseInt(vAddr,16)];
+	}
 
 	public boolean inPT(String vAddr) {
 		if(pgTable[Integer.parseInt(vAddr,16)] != null ) {

@@ -13,8 +13,8 @@ public class CPU {
 		processes = process;
 	}
 	
-	
 	public String[] getProcesses(){
 		return processes;
 	}
+	
 }

@@ -14,7 +14,7 @@ public class Driver {
 
 		Scanner s = new Scanner(System.in);
 		int rw ,index;
-		String input, line;
+		String input, line = null;
 
 		System.out.println("File Name: ");
 		//input = s.nextLine();
@@ -33,39 +33,80 @@ public class Driver {
 
 			if(os.mmu.checkTLB()){
 				System.out.println("Hit found in tlb.");
-				System.out.println(os.mmu.getAddress());
 
-				line = os.mmu.getAddress() + os.mmu.getRW() + "0" + "0" + "1";
+				line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "0," + "0," + "1,";
 
 				rw = Integer.parseInt(os.mmu.getRW());
 
 				if(rw == 1){
 					i++;
 					os.mmu.offset += "." + processes[i];
+					
+					os.mmu.getEntry().setReference("1");
+					os.mmu.getEntry().setDirty("1");
 
 				}
 				else{
-
+					
+					os.mmu.getEntry().setReference("1");
+					os.mmu.getEntry().setDirty("1");
+					
+					line += "None," + ",None";
 				}
 
 			}
 			else if(os.mmu.checkpgTable()){
 				System.out.println("Soft miss found in page table.");
-				System.out.println(os.mmu.getAddress());
 
+				index = os.ram.freeIndex();
 
-				line = os.mmu.getAddress() + os.mmu.getRW() + "1" + "0" + "0";
+				if(index != -1){
+					os.ram.loadPage(os.mmu.pgNum, index);
+				}
+				else{
+					os.ram.evictTable(Integer.parseInt(os.evict().getPageFrameNum()));
+					index = os.ram.freeIndex();
+					os.ram.loadPage(os.mmu.pgNum, index);
+				}
 
-				line = os.mmu.getAddress() + os.mmu.getRW();
+				line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "1," + "0," + "0,";
+
 
 				rw = Integer.parseInt(os.mmu.getRW());
 
 				if(rw == 1){
 					i++;
+
 					os.mmu.offset += "." + processes[i];
+					
+					os.mmu.getEntry().setReference("1");
+					os.mmu.getEntry().setDirty("1");
+
+					os.mmu.addTLB("1", "1", "1", Integer.toString(index));
+
+					if(os.clock.isEmpty()){
+						os.clock.insertFirst(os.mmu.pgEntry);
+					}
+					else{
+						os.clock.insertNext(os.mmu.pgEntry);
+					}
 
 				}
 				else{
+					os.mmu.addPageTable("1", "1", "0", Integer.toString(index));
+
+					os.mmu.addTLB("1", "1", "0", Integer.toString(index));
+
+					if(os.clock.isEmpty()){
+						os.clock.insertFirst(os.mmu.pgEntry);
+					}
+					else{
+						os.clock.insertNext(os.mmu.pgEntry);
+					}
+
+					System.out.println(os.mmu.getAddress());
+
+					line = os.mmu.getAddress() + os.mmu.getRW() + "0" + "1" + "0";
 
 				}
 
@@ -115,13 +156,13 @@ public class Driver {
 						os.clock.insertNext(os.mmu.pgEntry);
 					}
 
-					System.out.println(os.mmu.getAddress());
-
-					line = os.mmu.getAddress() + os.mmu.getRW() + "0" + "1" + "0";
+					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "0" + "1" + "0";
 
 				}
 
 			}
+			
+			os.csv.write(line);
 
 			os.instructionNum += 1;
 			os.resetR();

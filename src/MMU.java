@@ -48,6 +48,10 @@ public class MMU {
 	public boolean checkpgTable() {
 		return pageTable.inPT(pgNum);
 	}
+	
+	public PageTableEntry getEntry(){
+		return pageTable.getEntry(pgNum);
+	}
 
 	public boolean checkTLB() {
 		return tlb.inTLB(pgNum);

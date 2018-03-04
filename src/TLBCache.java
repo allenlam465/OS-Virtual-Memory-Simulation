@@ -26,6 +26,8 @@ public class TLBCache {
 	public boolean inTLB(String vAddr) {
 		for(int i = 0; i < tlbTable.length; i++) {
 			if(tlbTable[i] != null && vAddr.equals(tlbTable[i].getVPage())) {
+				
+				tlbTable[i].setReference("1");
 				return true;
 			}
 		}

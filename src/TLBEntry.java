@@ -1,7 +1,7 @@
 
 public class TLBEntry {
 
-	private String entry[] = new String[5];
+	protected String entry[] = new String[5];
 
 	public TLBEntry() {
 
@@ -23,7 +23,7 @@ public class TLBEntry {
 		return entry[0];
 	}
 
-	private void setVPage(String vPage) {
+	protected void setVPage(String vPage) {
 		entry[0] = vPage;
 	}
 
@@ -31,7 +31,7 @@ public class TLBEntry {
 		return entry[1];
 	}
 
-	private void setValid(String valid) {
+	protected void setValid(String valid) {
 		entry[1] = valid;
 	}
 
@@ -39,7 +39,7 @@ public class TLBEntry {
 		return entry[2];
 	}
 
-	private void setReference(String reference) {
+	protected void setReference(String reference) {
 		entry[2] = reference;
 	}
 
@@ -47,7 +47,7 @@ public class TLBEntry {
 		return entry[3];
 	}
 
-	private void setDirty(String dirty) {
+	protected void setDirty(String dirty) {
 		entry[3] = dirty;
 	}
 
