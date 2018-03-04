@@ -22,6 +22,15 @@ public class VPT {
 	public PageTableEntry getEntry(String vAddr){
 		return pgTable[Integer.parseInt(vAddr,16)];
 	}
+	
+	public int getVPage(String pgFrame){
+		for(int i = 0; i < pgTable.length; i++){
+			if(pgTable[i] != null && pgTable[i].getPageFrameNum().equals(pgFrame)){
+				return i;
+			}
+		}
+		return 0;
+	}
 
 	public boolean inPT(String vAddr) {
 		if(pgTable[Integer.parseInt(vAddr,16)] != null ) {

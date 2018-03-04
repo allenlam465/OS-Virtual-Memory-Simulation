@@ -1,9 +1,9 @@
 
 class pageNode {
 	public pageNode next;
-	public PageTableEntry data;
+	public TLBEntry data;
 
-	public pageNode(PageTableEntry data, pageNode next) {
+	public pageNode(TLBEntry data, pageNode next) {
 		this.next = next;
 		this.data = data;
 	}
@@ -31,7 +31,7 @@ public class Clock {
 		return pageNodeNum;
 	}
 
-	public void insertFirst(PageTableEntry data) {
+	public void insertFirst(TLBEntry data) {
 		pageNode pageNode = new pageNode(data, null);
 		pageNode.next = head;
 		if (head == null) {
@@ -51,7 +51,7 @@ public class Clock {
 		pageNodeNum++;
 	}
 
-	public void insertNext(PageTableEntry data) {
+	public void insertNext(TLBEntry data) {
 		pageNode pageNode = new pageNode(data, null);
 		pageNode.next = head;
 		if (head == null) {
@@ -97,7 +97,7 @@ public class Clock {
         System.out.print(ptr.data.getPageFrameNum()+ "\n");
     }
 
-	public PageTableEntry getHandData() {
+	public TLBEntry getHandData() {
 		return hand.data;
 	}
 }

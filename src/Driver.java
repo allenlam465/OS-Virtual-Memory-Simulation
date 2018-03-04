@@ -13,12 +13,12 @@ public class Driver {
 		os.copyPgFiles();
 
 		Scanner s = new Scanner(System.in);
-		int rw ,index;
+		int output, rw ,index;
+		TLBEntry evicted = null;
 		String input, line = null;
 
 		System.out.println("File Name: ");
-		//input = s.nextLine();
-		input = "test_files/test_1.txt";
+		input = s.nextLine();
 
 		os.csv = new CSV(input);
 
@@ -28,56 +28,58 @@ public class Driver {
 		os.mmu = new MMU(os.cpu.getProcesses());
 
 		for(int i = 0; i < processes.length; i++){
-			System.out.println(processes[i]);
 			i = os.mmu.handle(i);
 
 			if(os.mmu.checkTLB()){
 				System.out.println("Hit found in tlb.");
 
-				line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "0," + "0," + "1,";
+				line = os.mmu.getAddress() + "," + os.mmu.getRW() + ",";
 
 				rw = Integer.parseInt(os.mmu.getRW());
 
 				if(rw == 1){
 					i++;
-					os.mmu.offset += "." + processes[i];
+					
+					line += processes[i] + ", 0," + "0," + "1,";
 					
 					os.mmu.getEntry().setReference("1");
 					os.mmu.getEntry().setDirty("1");
+					
+					os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
 
 				}
 				else{
 					
+					output = os.read(os.mmu.pgNum, os.mmu.offset);
+					
+					line += output + ", 0," + "0," + "1,";
+					
 					os.mmu.getEntry().setReference("1");
 					os.mmu.getEntry().setDirty("1");
 					
-					line += "None," + ",None";
+					line += "None," + "None";
 				}
 
 			}
 			else if(os.mmu.checkpgTable()){
 				System.out.println("Soft miss found in page table.");
-
+				System.out.println("Adding to TLB.");
 				index = os.ram.freeIndex();
 
 				if(index != -1){
 					os.ram.loadPage(os.mmu.pgNum, index);
 				}
 				else{
-					os.ram.evictTable(Integer.parseInt(os.evict().getPageFrameNum()));
+					evicted = os.evict();
 					index = os.ram.freeIndex();
+					System.out.println(index);
 					os.ram.loadPage(os.mmu.pgNum, index);
 				}
-
-				line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "1," + "0," + "0,";
-
 
 				rw = Integer.parseInt(os.mmu.getRW());
 
 				if(rw == 1){
 					i++;
-
-					os.mmu.offset += "." + processes[i];
 					
 					os.mmu.getEntry().setReference("1");
 					os.mmu.getEntry().setDirty("1");
@@ -85,28 +87,31 @@ public class Driver {
 					os.mmu.addTLB("1", "1", "1", Integer.toString(index));
 
 					if(os.clock.isEmpty()){
-						os.clock.insertFirst(os.mmu.pgEntry);
+						os.clock.insertFirst(os.mmu.tlbEntry);
 					}
 					else{
-						os.clock.insertNext(os.mmu.pgEntry);
+						os.clock.insertNext(os.mmu.tlbEntry);
 					}
+					
+					output = os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
+					
+					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
+
 
 				}
 				else{
-					os.mmu.addPageTable("1", "1", "0", Integer.toString(index));
-
 					os.mmu.addTLB("1", "1", "0", Integer.toString(index));
 
 					if(os.clock.isEmpty()){
-						os.clock.insertFirst(os.mmu.pgEntry);
+						os.clock.insertFirst(os.mmu.tlbEntry);
 					}
 					else{
-						os.clock.insertNext(os.mmu.pgEntry);
+						os.clock.insertNext(os.mmu.tlbEntry);
 					}
+					
+					output = os.read(os.mmu.pgNum, os.mmu.offset);
 
-					System.out.println(os.mmu.getAddress());
-
-					line = os.mmu.getAddress() + os.mmu.getRW() + "0" + "1" + "0";
+					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
 
 				}
 
@@ -121,7 +126,7 @@ public class Driver {
 					os.ram.loadPage(os.mmu.pgNum, index);
 				}
 				else{
-					os.ram.evictTable(Integer.parseInt(os.evict().getPageFrameNum()));
+					evicted = os.evict();
 					index = os.ram.freeIndex();
 					os.ram.loadPage(os.mmu.pgNum, index);
 				}
@@ -130,34 +135,52 @@ public class Driver {
 
 				if(rw == 1){
 					i++;
-
-					os.mmu.offset += "." + processes[i];
+									
 					os.mmu.addPageTable("1", "1", "1", Integer.toString(index));
-
 					os.mmu.addTLB("1", "1", "1", Integer.toString(index));
 
 					if(os.clock.isEmpty()){
-						os.clock.insertFirst(os.mmu.pgEntry);
+						os.clock.insertFirst(os.mmu.tlbEntry);
 					}
 					else{
-						os.clock.insertNext(os.mmu.pgEntry);
+						os.clock.insertNext(os.mmu.tlbEntry);
 					}
+					
+					output = os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
+					
+					if(evicted != null){
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
 
+					}
+					else{
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
+
+					}
+					
 				}
 				else{
+
 					os.mmu.addPageTable("1", "1", "0", Integer.toString(index));
 
 					os.mmu.addTLB("1", "1", "0", Integer.toString(index));
+					
+					output = os.read(os.mmu.pgNum, os.mmu.offset);
 
 					if(os.clock.isEmpty()){
-						os.clock.insertFirst(os.mmu.pgEntry);
+						os.clock.insertFirst(os.mmu.tlbEntry);
 					}
 					else{
-						os.clock.insertNext(os.mmu.pgEntry);
+						os.clock.insertNext(os.mmu.tlbEntry);
 					}
+										
+					if(evicted != null){
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
 
-					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + "0" + "1" + "0";
+					}
+					else{
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
 
+					}
 				}
 
 			}

@@ -24,7 +24,7 @@ public class OS {
 	}
 
 	public void resetR(){
-		if(instructionNum == 20){
+		if(instructionNum == 5){
 			for(int i = 0; i < pageTable.pgTable.length; i++){
 				if(pageTable.pgTable[i] != null){
 					pageTable.pgTable[i].setReference("0");
@@ -33,23 +33,37 @@ public class OS {
 		}
 	}
 	
-	public PageTableEntry evict(){
+	public int read(String vPage, String offset){
+		int val = ram.getData(Integer.parseInt(mmu.tlb.getFrame(vPage)), Integer.parseInt(offset, 16));
 		
-		PageTableEntry output;
+		return val;
+	}
+	
+	public int write(String vPage, String offset, int value){
+		ram.ram[(Integer.parseInt(mmu.tlb.getFrame(vPage)))][Integer.parseInt(offset, 16)] = value;
+		System.out.println(ram.ram[(Integer.parseInt(mmu.tlb.getFrame(vPage)))][Integer.parseInt(offset, 16)]);
+		return value;
+	}
+	
+	public TLBEntry evict() throws NumberFormatException, IOException{
+		
+		TLBEntry output;
 		
 		while (true){
 			if(clock.hand.data.getReference().equals("0")){
 				output = clock.hand.data;
+				ram.pageToFile(output.getVPage(), Integer.parseInt(output.getPageFrameNum()));
+				ram.evictTable(Integer.parseInt(output.getPageFrameNum()));
 				clock.hand.data = null;
 				return output;
 			}
 			else if(clock.hand.data.getReference().equals("1")){
 				clock.hand.data.setReference("0");
-
 				clock.hand = clock.hand.next;
 
 			}
 		}
 
 	}
+	
 }

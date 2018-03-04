@@ -23,6 +23,19 @@ public class TLBCache {
 		}
 	}
 	
+	public String getFrame(String vAddr){
+		
+		for(int i = 0; i < tlbTable.length; i++) {
+			if(tlbTable[i] != null && vAddr.equals(tlbTable[i].getVPage())) {
+				
+				return tlbTable[i].getPageFrameNum();
+			}
+		}
+		
+		return null;
+		
+	}
+	
 	public boolean inTLB(String vAddr) {
 		for(int i = 0; i < tlbTable.length; i++) {
 			if(tlbTable[i] != null && vAddr.equals(tlbTable[i].getVPage())) {

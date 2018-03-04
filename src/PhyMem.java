@@ -20,6 +20,10 @@ public class PhyMem {
 		}
 	}
 	
+	public int getData(int pgFrame, int index){
+		return ram[pgFrame][index];
+	}
+	
 	public int freeIndex(){
 		for(int i = 0; i < ram.length; i++){
 			if(ram[i][0] == 0){
@@ -31,17 +35,19 @@ public class PhyMem {
 	}
 	
 	public void evictTable(int index){
+		
 		for(int i = 0; i < ram[0].length; i++){
 			ram[index][i] = 0;
 		}
 	}
 
 	public void pageToFile(String pgNum, int index) throws IOException{
-		FileWriter fstream = new FileWriter(pgNum + ".pg", true);
+		FileWriter fstream = new FileWriter("page_files_copy/" + pgNum + ".pg", false);
 		BufferedWriter ostream = new BufferedWriter(fstream);
 		
 		for(int i = 0; i < ram[0].length; i++){
 			ostream.write(Integer.toString(ram[index][i]));
+			ostream.newLine();
 		}
 		
 		ostream.close();

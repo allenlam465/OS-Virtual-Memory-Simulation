@@ -1,7 +1,7 @@
 public class MMU {
 
 	private String[] processes; //aka virtual addresses
-	private VPT pageTable = new VPT();
+	protected VPT pageTable = new VPT();
 	protected TLBCache tlb = new TLBCache();
 	PageTableEntry pgEntry;
 	TLBEntry tlbEntry;
@@ -39,8 +39,10 @@ public class MMU {
 	}
 	
 	public String getAddress(){
-		String addr = tlbEntry.getPageFrameNum();
-		addr += offset;
+//		String addr = tlbEntry.getPageFrameNum();
+//		addr += offset;
+		
+		String addr = pgNum+offset;
 		
 		return addr;
 	}
