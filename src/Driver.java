@@ -10,6 +10,7 @@ public class Driver {
 
 		OS os = new OS();
 
+		//Copy pages from page_files to page_files_copy for each run
 		os.copyPgFiles();
 
 		Scanner s = new Scanner(System.in);
@@ -22,18 +23,19 @@ public class Driver {
 
 		os.csv = new CSV(input);
 
+		//Obtain processes to be sent to CPU -> MMU
 		String[] processes = getFileContent(input).split("\\s+");
 
 		os.cpu = new CPU(processes);
 		os.mmu = new MMU(os.cpu.getProcesses());
 
+		//Processes are run one at time by checking TLB first then PageTable to determine type
+		//of miss or a hit occurs.
 		for(int i = 0; i < processes.length; i++){
 			i = os.mmu.handle(i);
 
 			if(os.mmu.checkTLB()){
-				System.out.println("Hit found in tlb.");
-
-				line = os.mmu.getAddress() + "," + os.mmu.getRW() + ",";
+				//System.out.println("Hit found in tlb.");
 
 				rw = Integer.parseInt(os.mmu.getRW());
 
@@ -45,7 +47,10 @@ public class Driver {
 					os.mmu.getEntry().setReference("1");
 					os.mmu.getEntry().setDirty("1");
 					
-					os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
+					output = os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
+					
+					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
+
 
 				}
 				else{
@@ -57,13 +62,13 @@ public class Driver {
 					os.mmu.getEntry().setReference("1");
 					os.mmu.getEntry().setDirty("1");
 					
-					line += "None," + "None";
+					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
 				}
 
 			}
 			else if(os.mmu.checkpgTable()){
-				System.out.println("Soft miss found in page table.");
-				System.out.println("Adding to TLB.");
+				//System.out.println("Soft miss found in page table.");
+				//System.out.println("Adding to TLB.");
 				index = os.ram.freeIndex();
 
 				if(index != -1){
@@ -72,7 +77,6 @@ public class Driver {
 				else{
 					evicted = os.evict();
 					index = os.ram.freeIndex();
-					System.out.println(index);
 					os.ram.loadPage(os.mmu.pgNum, index);
 				}
 
@@ -95,8 +99,14 @@ public class Driver {
 					
 					output = os.write(os.mmu.pgNum, os.mmu.offset, Integer.parseInt(processes[i]));
 					
-					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
+					if(evicted != null){
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
 
+					}
+					else{
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
+
+					}
 
 				}
 				else{
@@ -111,14 +121,20 @@ public class Driver {
 					
 					output = os.read(os.mmu.pgNum, os.mmu.offset);
 
-					line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
+					if(evicted != null){
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + evicted.getPageFrameNum() + "," + evicted.getDirty();
 
+					}
+					else{
+						line = os.mmu.getAddress() + "," + os.mmu.getRW() + "," + output + ",1," + "0," + "0," + "None , None";
+
+					}
 				}
 
 			}
 			else{
-				System.out.println("Hard miss not in TLB or pgTable.");
-				System.out.println("Writing to physical memory.");
+				//System.out.println("Hard miss not in TLB or pgTable.");
+				//System.out.println("Writing to physical memory.");
 
 				index = os.ram.freeIndex();
 
@@ -190,6 +206,7 @@ public class Driver {
 			os.instructionNum += 1;
 			os.resetR();
 		}
+		System.out.println("Processing complete.\nNew page files within page_files_copy directory and CSV files are located within the test_files directory.");
 
 		s.close();
 

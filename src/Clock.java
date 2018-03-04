@@ -73,7 +73,7 @@ public class Clock {
 	
 	public void display()
     {
-        System.out.print("\nCircular Singly Linked List = ");
+        System.out.print("Circular Linked List: ");
         pageNode ptr = head;
         if (pageNodeNum == 0) 
         {
