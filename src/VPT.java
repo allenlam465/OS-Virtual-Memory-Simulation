@@ -9,7 +9,6 @@ public class VPT {
 	//Use the virtual page number to index the entry
 	protected void addEntry(PageTableEntry entry,int vPage){
 		pgTable[vPage] = entry;
-		pgTable[vPage].setpageFrameNum(vPage);
 	}
 
 	protected boolean isEntry(int index){

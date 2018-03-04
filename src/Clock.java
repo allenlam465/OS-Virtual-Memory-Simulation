@@ -1,114 +1,103 @@
 
 class pageNode {
-    public pageNode next;
-    public PageTableEntry data;
+	public pageNode next;
+	public PageTableEntry data;
 
-    public pageNode(PageTableEntry data, pageNode next) {
-        this.next = next;
-        this.data = data;
-    }
+	public pageNode(PageTableEntry data, pageNode next) {
+		this.next = next;
+		this.data = data;
+	}
 }
 
 public class Clock {
+
+	private pageNode head;
+	private pageNode tail;
+	protected pageNode hand;
+	private int pageNodeNum;
+
+	public Clock(){
+		head = null;
+		tail = null;
+		hand = head;
+		pageNodeNum = 0;
+	}
+
+	public boolean isEmpty() {
+		return (pageNodeNum == 0);
+	}
 	
-	private pageNode head = null;
-	private pageNode hand = null;
-    private int numberOfElements = 0;
-    private pageNode nextNode = null;
-    private int index = 0;
+	public int getNum(){
+		return pageNodeNum;
+	}
 
-    public boolean isEmpty() {
-        return (numberOfElements == 0);
-    }
-    
-    public void insertFirst(PageTableEntry data) {
-        if (!(isEmpty())) {
-            index++;
-        }
-        pageNode pageNode = new pageNode(data, head);
-        head = pageNode;
-        hand = head;
-        numberOfElements++;
-    }
-    
-    public void insertNext(PageTableEntry data) {
-        pageNode pageNode = new pageNode(data, nextNode.next);
-        nextNode.next = pageNode;
-        numberOfElements++;
-    }
-    
-
-    public boolean deleteFirst() {
-        if (isEmpty())
-            return false;
-        if (index > 0)
-            index--;
-        head= hand.next;
-        numberOfElements--;
-        return true;
-    }
-    
-    public boolean deletenextNode() {
-        if (index > 0) {
-            numberOfElements--;
-            index--;
-            pageNode listNode = head;
-            while (listNode.next.equals(nextNode) == false)
-                listNode = listNode.next;
-            listNode.next = nextNode.next;
-            nextNode = listNode;
-            return true;
-        }
-        else {
-            nextNode = head.next;
-            index = 0;
-            return deleteFirst();
-        }
-    }
-
-    
-    
-    public PageTableEntry evict(){
-		while (true){
-			if(hand.data.getReference().equals("0")){
-				PageTableEntry output = hand.data;
-				hand.data = null;
-				return output;
-			}
-			else if(hand.data.getReference().equals("1")){
-				hand.data.setReference("0");
-				
-		        index = (index + 1) % numberOfElements;
-		        if (index == 0)
-		            nextNode = head;
-		        else
-		            nextNode = nextNode.next;
-				
-		        hand = nextNode;
-				
-			}
+	public void insertFirst(PageTableEntry data) {
+		pageNode pageNode = new pageNode(data, null);
+		pageNode.next = head;
+		if (head == null) {
+			head = pageNode;
+			pageNode.next = head;
+			hand = head;
+			tail = head;
 		}
-    	
+		else if(hand.data == null){
+			hand.data = data;
+		}
+		else{
+			tail.next = pageNode;
+			head = pageNode;
+		}
+		
+		pageNodeNum++;
+	}
+
+	public void insertNext(PageTableEntry data) {
+		pageNode pageNode = new pageNode(data, null);
+		pageNode.next = head;
+		if (head == null) {
+			head = pageNode;
+			pageNode.next = head;
+			hand = head;
+			tail = head;
+		}
+		else if(hand.data == null){
+			hand.data = data;
+		}
+		else{
+			tail.next = pageNode;
+			tail = pageNode;
+		}
+		
+		pageNodeNum++;
+	}
+	
+	public void display()
+    {
+        System.out.print("\nCircular Singly Linked List = ");
+        pageNode ptr = head;
+        if (pageNodeNum == 0) 
+        {
+            System.out.print("empty\n");
+            return;
+        }
+        if (head.next == head) 
+        {
+            System.out.print(head.data.getPageFrameNum() + "->"+ptr.data.getPageFrameNum()+ "\n");
+            return;
+        }
+        System.out.print(head.data.getPageFrameNum() + "->");
+        ptr = head.next;
+        while (ptr.next != head) 
+        {
+            System.out.print(ptr.data.getPageFrameNum()+ "->");
+            ptr = ptr.next;
+        }
+        System.out.print(ptr.data.getPageFrameNum()+ "->");
+        ptr = ptr.next;
+        System.out.print(ptr.data.getPageFrameNum()+ "\n");
     }
 
-    public boolean goToNextElement() {
-        if (isEmpty())
-            return false;
-        index = (index + 1) % numberOfElements;
-        if (index == 0)
-            nextNode = head;
-        else
-            nextNode = nextNode.next;
-        return true;
-    }
-    
-    public PageTableEntry getnextNodeData() {
-        return nextNode.data;
-    }
-
-    public void setnextNodeData(PageTableEntry data) {
-        nextNode.data = data;
-    }
-
-
+	public PageTableEntry getHandData() {
+		return hand.data;
+	}
 }

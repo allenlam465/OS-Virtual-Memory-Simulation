@@ -11,6 +11,7 @@ public class OS {
 	protected CPU cpu;
 	protected MMU mmu;
 	protected PhyMem ram = new PhyMem();
+	protected Clock clock = new Clock();
 
 	protected int instructionNum = 0;
 
@@ -31,6 +32,24 @@ public class OS {
 			}
 		}
 	}
+	
+	public PageTableEntry evict(){
+		
+		PageTableEntry output;
+		
+		while (true){
+			if(clock.hand.data.getReference().equals("0")){
+				output = clock.hand.data;
+				clock.hand.data = null;
+				return output;
+			}
+			else if(clock.hand.data.getReference().equals("1")){
+				clock.hand.data.setReference("0");
 
+				clock.hand = clock.hand.next;
 
+			}
+		}
+
+	}
 }

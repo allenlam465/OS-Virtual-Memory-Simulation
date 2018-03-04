@@ -3,6 +3,8 @@ public class MMU {
 	private String[] processes; //aka virtual addresses
 	private VPT pageTable = new VPT();
 	protected TLBCache tlb = new TLBCache();
+	PageTableEntry pgEntry;
+	TLBEntry tlbEntry;
 
 
 	public String rw, pgNum, offset;
@@ -11,12 +13,21 @@ public class MMU {
 	public MMU(String[] process) {
 		processes = process;
 	}
+	
+	public void addPageTable(String valid, String register, String dirty, String pageFrame){
+		pgEntry = new PageTableEntry(valid, register, dirty, pageFrame);
+		pageTable.addEntry(pgEntry, Integer.parseInt(pgNum,16));
+	}
+	
+	public void addTLB(String valid, String register, String dirty, String pageFrame){
+		tlbEntry = new TLBEntry(pgNum, valid, register, dirty, pageFrame);
+		tlb.addEntry(tlbEntry);
+	}
 
 	//Processes are handled by MMU to get offset and virtual pgNum
 	//Offset at end of the physical address,
 	public int handle(int i) {
 		
-		System.out.println(i);
 		rw = processes[i];
 		
 		i++;
@@ -25,6 +36,13 @@ public class MMU {
 		offset = getOffset(processes[i]);
 
 		return i;
+	}
+	
+	public String getAddress(){
+		String addr = tlbEntry.getPageFrameNum();
+		addr += offset;
+		
+		return addr;
 	}
 
 	public boolean checkpgTable() {

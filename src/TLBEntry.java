@@ -7,11 +7,12 @@ public class TLBEntry {
 
 	}
 
-	public TLBEntry(String vPage, String valid, String reference, String dirty) {
+	public TLBEntry(String vPage, String valid, String reference, String dirty, String pageFrame) {
 		entry[0] = vPage;
 		entry[1] = valid;
 		entry[2] = reference;
 		entry[3] = dirty;
+		entry[4] = pageFrame;
 	}
 	
 	public void print(){

@@ -38,6 +38,16 @@ public class TLBCache {
 			first = 0;
 		}
 	}
+	
+	public String getEntry(String vAddr) {
+		for(int i = 0; i < tlbTable.length; i++) {
+			if(tlbTable[i] != null && vAddr.equals(tlbTable[i].getVPage())) {
+				return tlbTable[i].getPageFrameNum();
+			}
+		}
+		
+		return null;
+	}
 
 	public TLBEntry getEntry(int i) {
 		return tlbTable[i];

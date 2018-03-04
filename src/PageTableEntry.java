@@ -7,10 +7,11 @@ public class PageTableEntry {
 
 	}
 
-	public PageTableEntry(String valid, String reference, String dirty) {
+	public PageTableEntry(String valid, String reference, String dirty, String pageFrame) {
 		entry[0] = valid;
 		entry[1] = reference;
 		entry[2] = dirty;
+		entry[3] = pageFrame;
 	}
 	
 	public void print(){

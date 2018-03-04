@@ -20,6 +20,16 @@ public class PhyMem {
 		}
 	}
 	
+	public int freeIndex(){
+		for(int i = 0; i < ram.length; i++){
+			if(ram[i][0] == 0){
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
 	public void evictTable(int index){
 		for(int i = 0; i < ram[0].length; i++){
 			ram[index][i] = 0;
