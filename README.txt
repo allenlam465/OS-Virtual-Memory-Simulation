@@ -15,16 +15,22 @@ Reads in a file with following format:
 
 	*R/W Bit is determined by a 0/1 respectivly.
 
+Copies page files provided to a new directory page_files_copy for usage without changing original page files.
+
+Notes:
+The CSV files might have formatting issues due to how excel reads a data cell. 
+Leading 0's are not shown within the file and E are taken in as a exponent declaration. 
+
 Usage: 
 All commands were run in terminal within the directory the files exists.
 
 Compile within a terminal with the following commands
 
-	javac Main.java
+	javac Driver.java
 
 Run within a terminal with the following commands
 
-	java Main
+	java Driver
 
 Input file name to process simulation with.
 Make sure that the file exists in the same directory.
